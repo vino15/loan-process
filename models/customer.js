@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 
 let customerSchema = Schema({
 	customerId : {
-		type : Number
+		type : String
 	},
 	firstName : {
 		type : String,
@@ -39,11 +39,12 @@ let customerSchema = Schema({
 			},
 			message : 'Invalid password'
 		}
-	},
-	createdAt : {
-		type : Date,
-		default : Date.now
 	}
+},{
+	toJSON : {
+		virtuals :true
+	},
+	timestamp : true
 })
 
 customerSchema
@@ -51,6 +52,17 @@ customerSchema
 	.get(function(){
 		return `${this.firstName} ${this.lastName}`
 	})
+
+
+customerSchema.methods.populateCustomerId = async function(){
+
+	let User = this
+	let count = await User.model('customer').find({}).estimatedDocumentCount() + 1
+	let customerId = 'SBI'+count.toString().padStart(6,0)
+	User.customerId=customerId
+	let data = await User.save()
+	return data
+}
 
 customerSchema.pre('save', function (next) {
     var user = this;
@@ -69,3 +81,5 @@ customerSchema.pre('save', function (next) {
 
 
 module.exports = new model('customer',customerSchema)
+
+

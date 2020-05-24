@@ -1,8 +1,37 @@
 const router = require('express').Router()
-const { signUpValidator } = require('../validations/customer')
-const { signUp } = require('../controllers/customer')
-const { handleFieldError } = require('../middleware')
+const customerValidation = require('../validations/customer')
+const customerController = require('../controllers/customer')
+const { handleFieldError,authorizeCustomer } = require('../middleware')
 
-router.post('/signup',signUpValidator,handleFieldError,signUp)
+router.use('/profile',authorizeCustomer)
+router.use('/loan',authorizeCustomer)
+
+router.post(
+	'/auth/signup',
+	customerValidation.signUpValidator,
+	handleFieldError,
+	customerController.signUp
+)
+
+router.post(
+	'/auth/signin',
+	customerValidation.signInValidator,
+	handleFieldError,
+	customerController.signIn
+)
+
+router.post(
+	'/profile/updateCustomerDetail',
+	customerValidation.updateCustomerDetailValidator,
+	handleFieldError,
+	customerController.updateProfile
+)
+
+router.post(
+	'/loan/requestLoan',
+	customerValidation.requestLoanValidator,
+	handleFieldError,
+	customerController.requestLoan
+)
 
 module.exports = router

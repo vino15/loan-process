@@ -4,5 +4,6 @@
 	"DB": {
 		"BASE_URL" : "mongodb://127.0.0.1:27017",
 		"NAME" : "loan-process"
-	}
+	},
+	"JWT_SECRET" : "asdasd8hk90972342bmnvasdx5716253"
 }

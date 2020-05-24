@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 const regex = {
 	email : /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
 	password : /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,}$/,
@@ -6,7 +8,7 @@ const regex = {
 	accountNumber : /^\d{9,18}$/
 }
 
-const formatToMoney = val => val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+const formatToMoney = val => val.toString().replace(/\d(?=(\d{3})+\.)/g, '$&,')
 
 function formatResponse(status,data,message=''){
 	return {
@@ -16,8 +18,13 @@ function formatResponse(status,data,message=''){
 	}
 }
 
+const checkIsValidDate = (value) => {
+	return moment(value,'DD-MM-YYYY',true).isValid()
+}
+
 module.exports = {
 	regex,
 	formatToMoney,
-	formatResponse
+	formatResponse,
+	checkIsValidDate
 }
