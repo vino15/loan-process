@@ -22,7 +22,6 @@ module.exports = {
                         mobileNumber: req.body.mobileNumber
                     }
                 ]
-
             }
 
             let registeredUser = await CustomerModel.findOne(findQuery)
@@ -38,6 +37,7 @@ module.exports = {
                 data,
                 "CUSTOMER_SIGNUP_SUCCESSFULL"
             )
+
         } catch (err) {
             return handleResponse(res, 400, err, err.message)
         }
@@ -62,6 +62,7 @@ module.exports = {
             tokenData['token'] = jwt.sign(tokenData, config.JWT_SECRET)
 
             return handleResponse(res, 200, tokenData, "CUSTOMER_SIGNIN_SUCCESSFULL")
+
         } catch (err) {
             return handleResponse(res, 401, err, err.message)
         }
@@ -92,6 +93,7 @@ module.exports = {
             let customerDetail = await CustomerDetailModel.findOneAndUpdate(query, data, option)
 
             return handleResponse(res, 200, customerDetail, "CUSTOMER_UPDATE_DETAILS_SUCCESSFULL")
+
         } catch (err) {
             return handleResponse(res, 401, err, err.message)
         }
@@ -101,6 +103,11 @@ module.exports = {
         let { customerId } = req.user
 
         try{
+
+            let isCustomerInformationFilled = await CustomerDetailModel.findOne({ customerId })
+
+            if(!isCustomerInformationFilled)
+                throw new Error("CUSTOMER_INFORMATION_NEED_TO_BE_FILLED")
 
         	let alreadyLoanApplied = await  LoanModel.findOne({ customerId })
 
@@ -115,7 +122,7 @@ module.exports = {
 
 	        let customerRelationShipManagersIds = _.map(customerRelationShipManagers, '_id')
 
-	        //GET THE COUNT OF MAPPED CUSTOMERS LOAN WITH RM WISE
+	        //GET THE COUNT OF MAPPED CUSTOMERS LOAN WITH RM WISE with the status pending or processing
 
 	        let matchQuery = {
 	            $match: {
@@ -124,6 +131,14 @@ module.exports = {
 	                }
 	            }
 	        }
+
+            let matchQuery2 = {
+                $match: {
+                    'loan.relationshipManagerStatus': {
+                        $lt:2
+                    }
+                }
+            }
 
 	        let groupQuery = {
 	            $group: {
@@ -134,18 +149,18 @@ module.exports = {
 
 	        let sortQuery = {
 	            $sort: {
-	                count: 1
+	                count: 1       
 	            }
 	        }
 
-	        let alreadyAssignedRMList = await LoanModel.aggregate([matchQuery, groupQuery, sortQuery])
+	        let alreadyAssignedRMList = await LoanModel.aggregate([matchQuery,matchQuery2, groupQuery, sortQuery])
 
 	        let idleRelationshipManagersList = _.filter(
 	            customerRelationShipManagersIds,
 	            function(_id) {
 	                if (!alreadyAssignedRMList.length)
 	                    return true
-	                return alreadyAssignedRMList.some(data => !_id.equals(data._id))
+	                return !alreadyAssignedRMList.some(data => data._id.equals(_id))
 	            }
 	        )
 
@@ -166,6 +181,23 @@ module.exports = {
         }
         catch(err){
         	return handleResponse(res, 400, err, err.message)
+        }
+    },
+    getLoanDetails : async(req,res) => {
+
+        let { customerId } = req.user
+
+        try{
+
+            let LoanData = await LoanModel.findOne({ customerId })
+
+            if(!LoanData)
+                throw Error("CUSTOMER_LOAN_DATA_NOT_FOUND")
+            
+            return handleResponse(res, 200, LoanData, "CUSTOMER_GET_LOAN_DETAIL_SUCCESS")
+        } 
+        catch(err){
+            return handleResponse(res, 400, err, err.message)
         }
     }
 }

@@ -41,5 +41,4 @@ describe('POST /customer/signup', () => {
                 done()
             });
     });
-
 })

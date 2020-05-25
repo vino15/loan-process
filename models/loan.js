@@ -1,11 +1,11 @@
 const { Schema, model } = require('mongoose')
 const { regex } = require('../helpers')
 const bcrypt = require('bcryptjs')
+const _ = require('lodash')
 
 let loanSchema = Schema({
 	customerId : {
-		type : String,
-		required:true
+		type : String
 	},
 	loan : {
 		amount : Number,
@@ -56,25 +56,27 @@ let loanSchema = Schema({
 		}
 	}
 },{
-	timestamp : true,
 	toJSON : {
 		virtuals : true
 	}
 })
 
+
 loanSchema.virtual('loanStatus')
 	.get(function(){
-		let { managerStatus,relationshipManagerStatus } = this
-		if(managerStatus === 3 || relationshipManagerStatus ===3)
-			return 'Declined'
+		let { managerStatus,relationshipManagerStatus } = this.loan
 		if(managerStatus === 2 && relationshipManagerStatus === 2)
 			return 'Approved'
-		if(managerStatus === 1 || relationshipManagerStatus ===1)
-			return 'processing'
+		if(managerStatus === 3 || relationshipManagerStatus ===3)
+			return 'Declined'
+
+		if(managerStatus !== 0 || relationshipManagerStatus !== 0)
+			return 'Processing'
 		if(managerStatus === 0 || relationshipManagerStatus === 0)
 			return 'Pending'
 	})
 
-module.exports = new model('loan',loanSchema)
+
+module.exports = new model('Loan',loanSchema)
 
 

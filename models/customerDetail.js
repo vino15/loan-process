@@ -4,7 +4,8 @@ const { regex,formatToMoney } = require('../helpers')
 let relation = [
 	'father',
 	'mother',
-	'wife'
+	'wife',
+	'child'
 ]
 
 let martialStatus = [
@@ -33,15 +34,12 @@ let rank = [
 
 let customerDetailSchema = Schema({
 	customerId : {
-		type : String,
-		ref : 'customer'
+		type : String
 	},
 	customerDetail : {
 		accountInformation : {
 			accountNumber : {
-				type : String,
-				unique : true,
-				requried : true
+				type : String
 			}
 		},
 		personalInformation : { 
@@ -131,13 +129,16 @@ let customerDetailSchema = Schema({
 				type : Number
 			},
 			annualIncome : {
-				type : String,
+				type : Number,
 				get : function(val){
 					return `₹ ${formatToMoney(val)}`
 				}
 			},
 			rank : {
 				type : Number,
+				get : function(value){
+					return rank[value]
+				},
 				enum : [
 					0, //Employee
 					1, //Supervisor
@@ -145,19 +146,17 @@ let customerDetailSchema = Schema({
 					3, //Manager
 					4, //CEO/Chariman/Director
 					5 //Owner
-				],
-				get : function(value){
-					return rank[value]
-				}
+				]
 			},
 			lengthOfService : {
-				type : String,
-				set : function(value){
-					return `${value} years`
-				}
+				type : Number,
+				get : (value) => `${value} years`
 			}
 		}
 	}
+},{
+	  toObject : {getters: true,virtuals:true},
+      toJSON : {getters: true,virtuals:true}
 })
 
-module.exports = new model('customerDetail', customerDetailSchema)
+module.exports = new model('CustomerDetail', customerDetailSchema)

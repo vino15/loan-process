@@ -57,7 +57,7 @@ customerSchema
 customerSchema.methods.populateCustomerId = async function(){
 
 	let User = this
-	let count = await User.model('customer').find({}).estimatedDocumentCount() + 1
+	let count = await User.model('Customer').find({}).estimatedDocumentCount() + 1
 	let customerId = 'SBI'+count.toString().padStart(6,0)
 	User.customerId=customerId
 	let data = await User.save()
@@ -80,6 +80,6 @@ customerSchema.pre('save', function (next) {
 })
 
 
-module.exports = new model('customer',customerSchema)
+module.exports = new model('Customer',customerSchema)
 
 

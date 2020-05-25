@@ -1,4 +1,4 @@
-const { check } = require('express-validator')
+const { check,param } = require('express-validator')
 const { regex, checkIsValidDate } = require('../helpers')
 
 module.exports = {
@@ -21,5 +21,8 @@ module.exports = {
         .isEmail()
         .withMessage('Enter the valid email ID'),
         check('password', 'password is required').not().isEmpty()
+    ],
+    updateLoanStatusValidator : [
+        param('customerId', 'customerId is required in params').exists()
     ]
 }

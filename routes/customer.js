@@ -34,4 +34,9 @@ router.post(
 	customerController.requestLoan
 )
 
+router.get(
+	'/loan/loanDetails',
+	customerController.getLoanDetails
+)
+
 module.exports = router

@@ -46,6 +46,6 @@ managementSchema.pre('save', function (next) {
 })
 
 
-module.exports = new model('management',managementSchema)
+module.exports = new model('Management',managementSchema)
 
 

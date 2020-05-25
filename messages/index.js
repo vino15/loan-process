@@ -9,6 +9,9 @@ module.exports = {
 	"CUSTOMER_UPDATE_DETAILS_FAILED" : 'Customer detail updation unsuccessfull!!',
 	"CUSTOMER_ALREADY_APPLIED_FOR_LOAN" : 'You have already applied for loan',
 	"CUSTOMER_LOAN_REQUEST_SUCCESSFULL" : "Loan request updated",
+	"CUSTOMER_LOAN_DATA_NOT_FOUND" : "Loan is not applied",
+	"CUSTOMER_GET_LOAN_DETAIL_SUCCESS" : "Loan details successfully retrieved!!",
+	"CUSTOMER_INFORMATION_NEED_TO_BE_FILLED" : "Please fill your details, before requesting the loan!!",
 	//Management
 	"MANAGEMENT_SIGNUP_USER_ALREADY_REGISTERED" : "User already registered",
 	"MANAGEMENT_SIGNUP_SUCCESSFULL" : "User successfully registered",

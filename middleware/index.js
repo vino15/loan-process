@@ -30,7 +30,7 @@ const handleResponse = (res,status,data=null,messageType) => {
             formatResponse(
                 500,
                 null,
-                messages.TECHNICAL_ERROR
+                data.errmsg
             )
             
         )
@@ -42,7 +42,7 @@ const authorizeCustomer = (req,res,next) => {
     if(!token)
         return handleResponse(res,401,null,'CUSTOMER_UNAUTHORIZED')
     let user = jwt.verify(token,config.JWT_SECRET)
-    if(!user)
+    if(!user || user.role)
         return handleResponse(res,401,null,'CUSTOMER_UNAUTHORIZED')
     req.user = user
     next()
