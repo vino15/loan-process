@@ -196,9 +196,20 @@ module.exports = {
                 }
             }
 
+            let project = {
+                $project : {
+                    _id :1,
+                    loan : 1,
+                    customerId : 1,
+                    'relationshipManagerProfile._id' : 1,
+                    'relationshipManagerProfile.userName' : 1,
+                    'relationshipManagerProfile.mobileNumber' : 1
+                }
+            }
+
             let unwind = { "$unwind": "$customerDetails" }
 
-            let list = await LoanModel.aggregate([populateQuery1,populateQuery, unwind])
+            let list = await LoanModel.aggregate([populateQuery1,populateQuery, unwind,project])
 
             return handleResponse(res, 200, list, "MANAGEMENT_RM_GETLOANLIST_SUCCESSFULL")
 

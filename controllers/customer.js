@@ -132,13 +132,13 @@ module.exports = {
 	            }
 	        }
 
-            let matchQuery2 = {
-                $match: {
-                    'loan.relationshipManagerStatus': {
-                        $lt:2
-                    }
-                }
-            }
+            // let matchQuery2 = {
+            //     $match: {
+            //         'loan.relationshipManagerStatus': {
+            //             $lt:2
+            //         }
+            //     }
+            // }
 
 	        let groupQuery = {
 	            $group: {
@@ -153,7 +153,7 @@ module.exports = {
 	            }
 	        }
 
-	        let alreadyAssignedRMList = await LoanModel.aggregate([matchQuery,matchQuery2, groupQuery, sortQuery])
+	        let alreadyAssignedRMList = await LoanModel.aggregate([matchQuery, groupQuery, sortQuery])
 
 	        let idleRelationshipManagersList = _.filter(
 	            customerRelationShipManagersIds,
